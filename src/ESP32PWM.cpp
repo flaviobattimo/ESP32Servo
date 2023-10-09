@@ -28,7 +28,7 @@ void ESP32PWM::allocateTimer(int timerNumber){
 	if(ESP32PWM::explicateAllocationMode==false){
 		ESP32PWM::explicateAllocationMode=true;
 		for(int i=0;i<4;i++)
-			ESP32PWM::timerCount[i]=4;// deallocate all timers to start mode
+			ESP32PWM::timerCount[i]=CHANNELS_PER_TIMER;// deallocate all timers to start mode
 	}
 	ESP32PWM::timerCount[timerNumber]=0;
 }
@@ -61,7 +61,7 @@ double ESP32PWM::_ledcSetupTimerFreq(uint8_t chan, double freq,
 int ESP32PWM::timerAndIndexToChannel(int timerNum, int index) {
 	int localIndex = 0;
 	for (int j = 0; j < NUM_PWM; j++) {
-		if (((j / 2) % 4) == timerNum) {
+		if (((j / 2) % CHANNELS_PER_TIMER) == timerNum) {
 			if (localIndex == index) {
 				return j;
 			}
@@ -76,15 +76,15 @@ int ESP32PWM::allocatenext(double freq) {
 		for (int i = 0; i < 4; i++) {
 			bool freqAllocated = ((timerFreqSet[i] == freqlocal)
 					|| (timerFreqSet[i] == -1));
-			if (freqAllocated && timerCount[i] < 4) {
+			if (freqAllocated && timerCount[i] < CHANNELS_PER_TIMER) {
 				if (timerFreqSet[i] == -1) {
 					//Serial.println("Starting timer "+String(i)+" at freq "+String(freq));
 					timerFreqSet[i] = freqlocal;
 				}
-				//Serial.println("Free channel timer "+String(i)+" at freq "+String(freq)+" remaining "+String(4-timerCount[i]));
+				//Serial.println("Free channel timer "+String(i)+" at freq "+String(freq)+" remaining "+String(CHANNELS_PER_TIMER-timerCount[i]));
 
 				timerNum = i;
-				for (int index=0; index<4; ++index)
+				for (int index=0; index<CHANNELS_PER_TIMER; ++index)
 				{
 					int myTimerNumber = timerAndIndexToChannel(timerNum,index);
 					if ((myTimerNumber >= 0)  && (!ChannelUsed[myTimerNumber]))
