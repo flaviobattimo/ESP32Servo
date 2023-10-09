@@ -10,10 +10,10 @@
 #include "esp32-hal-ledc.h"
 #if defined(CONFIG_IDF_TARGET_ESP32S2)
 #define NUM_PWM 8
-#define TIMER_PER_CHANNEL 2
+#define CHANNELS_PER_TIMER 2
 #else
 #define NUM_PWM 16
-#define TIMER_PER_CHANNEL 4
+#define CHANNELS_PER_TIMER 4
 #endif
 
 #define PWM_BASE_INDEX 0
